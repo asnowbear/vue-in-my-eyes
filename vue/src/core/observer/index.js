@@ -179,10 +179,11 @@ export function defineReactive (
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    get: function reactiveGetter () {
+    get: function reactiveGetter () { // renderd的时候，会调用
       // 执行 value 已定义的 get 方法
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
+        // 开始依赖收集(建立 dep 和 watcher 之间的关系)
         dep.depend()
         if (childOb) {
           childOb.dep.depend()
