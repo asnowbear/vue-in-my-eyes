@@ -3,11 +3,14 @@
 import type Watcher from './watcher'
 import { remove } from '../util/index'
 
+// 保证 Dep 的 id 唯一
 let uid = 0
 
 /**
  * A dep is an observable that can have multiple
  * directives（指令） subscribing(订阅) to it.
+ *
+ * Dep 和 Watcher 形成了一个圈，get -> Dep.depend() -> De.target.addDep -> dep.addSub()
  */
 export default class Dep {
   static target: ?Watcher;
@@ -27,7 +30,7 @@ export default class Dep {
    * @memberof Dep
    */
   addSub (sub: Watcher) {
-    this.subs.push(sub)
+    this.subs.push(sub) // 添加 Watcher 对象
   }
 
   // 移除 watcher 对象
@@ -63,9 +66,9 @@ export function pushTarget (_target: Watcher) {
     targetStack.push(Dep.target)
   }
 
-  Dep.target = _target
+  Dep.target = _target // 赋值给当前 Dep.target
 }
 
 export function popTarget () {
-  Dep.target = targetStack.pop()
+  Dep.target = targetStack.pop() // 删除栈里面的元素，并返回
 }
