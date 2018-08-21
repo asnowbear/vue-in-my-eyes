@@ -37,8 +37,8 @@ export default class Watcher {
   deps: Array<Dep>;
   newDeps: Array<Dep>;
   depIds: SimpleSet;
-  newDepIds: SimpleSet;
-  getter: Function;
+  newDepIds: SimpleSet;// 缓存 Dep 对象，确保不重复
+  getter: Function; // vue 中的渲染函数
   value: any;
 
   constructor (
@@ -64,6 +64,7 @@ export default class Watcher {
     } else {
       this.deep = this.user = this.lazy = this.sync = false
     }
+
     this.cb = cb
     this.id = ++uid // uid for batching
     this.active = true
@@ -75,9 +76,11 @@ export default class Watcher {
     this.expression = process.env.NODE_ENV !== 'production'
       ? expOrFn.toString()
       : ''
+
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       // 将 updateComponent(lifecycle.js) 赋值给 getter
+      // getter 持有 updateComponent引用，也就掌握了 vue 的渲染
       this.getter = expOrFn
     } else {
       this.getter = parsePath(expOrFn)
@@ -102,7 +105,7 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
-    // 将自身实例（wathcer）赋值给 Dep.target,作为依赖收集
+    // 将自身实例（wathcer）指向 Dep.target, 作为依赖收集
     pushTarget(this)
 
     let value
@@ -124,8 +127,11 @@ export default class Watcher {
         traverse(value) // traverse 穿越，走过
       }
 
-      // 将观察者实例从target栈中取出并设置给Dep.target
+      // 将观察者实例从target栈中取出并设置给 Dep.target
+      // 形成了一个回合 this = Dep.target
       popTarget()
+
+      // 清除依赖关系
       this.cleanupDeps()
     }
     return value
@@ -133,7 +139,7 @@ export default class Watcher {
 
   /**
    * Add a dependency to this directive.
-   * Dep.depend()的调用触发，Observer 的 get() 触发 Dep.depend()
+   * Observer 的 get() 触发 Dep.depend(), Dep.depend() 的调用触发 addDep
    */
   addDep (dep: Dep) {
     const id = dep.id
