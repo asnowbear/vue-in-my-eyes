@@ -45,7 +45,8 @@ export function initRender (vm: Component) {
       !isUpdatingChildComponent && warn(`$listeners is readonly.`, vm)
     }, true)
   } else {
-    // 添加 '$atttrs' 和 '$listeners' 属性
+    // 劫持 '$atttrs' 和 '$listeners' 属性
+    // 这俩属性优先被观测
     defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true)
     defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true)
   }
@@ -87,6 +88,8 @@ export function renderMixin (Vue: Class<Component>) {
     if (_parentVnode) {
       vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject
     }
+
+    console.log('.....render.....')
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
