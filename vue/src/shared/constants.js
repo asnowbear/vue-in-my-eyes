@@ -1,7 +1,8 @@
 export const SSR_ATTR = 'data-server-rendered'
 
+// 直接绑到 Vue 上的静态方法
 export const ASSET_TYPES = [
-  'component',
+  'component', // Vue.component
   'directive',
   'filter'
 ]
