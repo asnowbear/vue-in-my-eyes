@@ -57,10 +57,10 @@ export default class Watcher {
     vm._watchers.push(this)
     // options
     if (options) {
-      this.deep = !!options.deep
-      this.user = !!options.user
-      this.lazy = !!options.lazy
-      this.sync = !!options.sync
+      this.deep = !!options.deep // false
+      this.user = !!options.user // false
+      this.lazy = !!options.lazy // fale
+      this.sync = !!options.sync // false
     } else {
       this.deep = this.user = this.lazy = this.sync = false
     }
@@ -95,7 +95,9 @@ export default class Watcher {
       }
     }
 
-    // 如果没有 lazy 的话，则直接执行 updateComponent 函数
+    console.log('get fun excuted.')
+
+    // 初始化依赖收集
     this.value = this.lazy
       ? undefined
       : this.get()
@@ -105,11 +107,15 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
-    // 将自身实例（wathcer）指向 Dep.target, 作为依赖收集
+    // Dep.target = this, 作为依赖收集
     pushTarget(this)
+
+    console.log('Dep.target ====== ' + Dep.target.id)
 
     let value
     const vm = this.vm
+
+    console.log('....BEGINE TO RENDER....')
 
     // 启动渲染流程，此时：getter=updateComponent
     try {
@@ -143,6 +149,8 @@ export default class Watcher {
    */
   addDep (dep: Dep) {
     const id = dep.id
+
+    // 每次属性的get都会依赖收集，这里去重
     if (!this.newDepIds.has(id)) {
       this.newDepIds.add(id)
       this.newDeps.push(dep)
@@ -185,9 +193,9 @@ export default class Watcher {
     if (this.lazy) {
       this.dirty = true
     } else if (this.sync) {
-      this.run()
+      this.run() // 如果是同步，则直接渲染
     } else {
-      queueWatcher(this)
+      queueWatcher(this) // 如果是异步，则交给queue,在下一个 nextTick render
     }
   }
 
@@ -197,7 +205,7 @@ export default class Watcher {
    */
   run () {
     if (this.active) {
-      const value = this.get()
+      const value = this.get() // 触发 render
       if (
         value !== this.value ||
         // Deep watchers and watchers on Object/Arrays should fire even
