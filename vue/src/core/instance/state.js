@@ -195,6 +195,8 @@ function initData (vm: Component) {
   // 观察者模式
   // --------------------------
 
+  console.log('......BEGIN TO OBSERVER DATA......')
+
   // 第三阶段：观察者模式
   // 为 data 添加观察者 【重要流程】
   observe(data, true /* asRootData */)
