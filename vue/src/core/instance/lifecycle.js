@@ -61,6 +61,8 @@ export function lifecycleMixin (Vue: Class<Component>) {
       callHook(vm, 'beforeUpdate')
     }
 
+    console.log('....update and __patch__ ....')
+
     const prevEl = vm.$el
     const prevVnode = vm._vnode
     const prevActiveInstance = activeInstance
@@ -217,6 +219,8 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+
+  console.log('.....BEGIN TO WATCHER .....')
 
   // 定义 Watcher 建立 model 和 view 的联系
   // 在 Wathcer 的 getter 执行 updateComponent 函数
