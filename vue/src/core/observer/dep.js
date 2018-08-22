@@ -26,6 +26,8 @@ export default class Dep {
    * 添加 watcher 对象，建立和 watcher 的关联
    * 来自 watcher.addDep() 方法
    *
+   * depend -> Watcher -> addSub
+   *
    * @param {Watcher} sub
    * @memberof Dep
    */
@@ -38,15 +40,18 @@ export default class Dep {
     remove(this.subs, sub)
   }
 
-  // 依赖收集
+  // 依赖收集，dep 对象和 Dep.target 建立关系
   depend () {
+    console.log('-------------depend------------')
     if (Dep.target) {
+      console.log('has： watcher id === ' + Dep.target.id)
       Dep.target.addDep(this) // 调用 watcher 来添加 dep 对象
     }
   }
 
   // 发布通告
   notify () {
+    console.log('....NOTICY AND DEPEND.....')
     // stabilize the subscriber list first
     const subs = this.subs.slice()
     for (let i = 0, l = subs.length; i < l; i++) {
