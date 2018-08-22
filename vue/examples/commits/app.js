@@ -11,18 +11,18 @@ var demo = new Vue({
 
   // passed original data
   data: {
-    branches: ['master', 'dev'],
-    currentBranch: 'master',
-    commits: null
+    branches: ['master', 'dev'], // 取值
+    currentBranch: 'master', // 取值
+    commits: null  // commits 会是一个array，里面包括array,在set时，将会逐个递归observer，不管commits是否使用
   },
 
   created: function () {
     this.fetchData()
   },
 
-  watch: {
-    currentBranch: 'fetchData'
-  },
+  // watch: {
+  //   currentBranch: 'fetchData'
+  // },
 
   filters: {
     truncate: function (v) {
@@ -38,10 +38,9 @@ var demo = new Vue({
     fetchData: function () {
       var xhr = new XMLHttpRequest()
       var self = this
-      xhr.open('GET', apiURL + self.currentBranch)
+      xhr.open('GET', apiURL + self.currentBranch) // 会引起， currentBranch 的 get 调用
       xhr.onload = function () {
         self.commits = JSON.parse(xhr.responseText)
-        console.log(self.commits[0].html_url)
       }
       xhr.send()
     }
