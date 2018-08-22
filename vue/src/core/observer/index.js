@@ -44,18 +44,28 @@ export class Observer {
     // 给 value 添加 __ob__ 属性，并赋值为 Observer 实例
     // value.__ob__ = this，就是挂载自己个
     def(value, '__ob__', this)
-    // 监控 array 和 object
+
+    // console.log('new OB :' + printObject(value))
+
+    // 监控 array
     if (Array.isArray(value)) {
       const augment = hasProto
         ? protoAugment
         : copyAugment
       augment(value, arrayMethods, arrayKeys)
 
+      // console.log('Start Array observer >>>>>>>>>')
       // 遍历 array，并监控 array
       this.observeArray(value)
+
+      // console.log('End Array observer >>>>>>>>>')
     } else {
+      // console.log('Start Object Walk >>>>>>>>>')
+
       // 为每一个data属性添加拦截
       this.walk(value)
+
+      // console.log('End Object Walk >>>>>>>>>')
     }
   }
 
@@ -105,6 +115,23 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
   }
 }
 
+function printObject (object: any): string {
+  let result = object
+
+  if (isObject(object)) {
+    const keys = Object.keys(object)
+    keys.forEach(key => {
+      result += '[' + key + ']  = ' + object[key] + ', '
+    })
+  }
+
+  if (object.length) {
+    result = object.join()
+  }
+
+  return result
+}
+
 /**
  * 类似一个工厂方法
  * 创造 ob 对象，没有则新创建，有则返回缓存
@@ -118,13 +145,13 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     return
   }
 
-  // 代码分段较少
+  console.log('observer >>>>>>' + printObject(value))
 
   // ob: Observer 对象实例
   let ob: Observer | void
   // 在 value 中存在 __ob__, 并且是 Observer 的实例，则将
   // Observer的实例挂载到 __ob__ 对象上
-  // 应用层缓存
+  // 应用层缓存，value 不重复挂载 Observer
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -175,13 +202,18 @@ export function defineReactive (
   // 对象的子对象递归进行 observer
   let childOb = !shallow && observe(val)
 
+  // + 号的优先级，比 ？ 要靠前， 这就是为什么不打印 'Observer property >>>>>>'
+  console.log('Observer property >>>>>> ' + (key == null ? ' undefined ' : key))
+
   // 将来应使用Reflect.defineProperty来代替Object的方法
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
-    get: function reactiveGetter () { // renderd的时候，会调用
+    // renderd的时候，会调用, 或者调用属性（非渲染）
+    get: function reactiveGetter () {
       // 执行 value 已定义的 get 方法
       const value = getter ? getter.call(obj) : val
+      console.log('GET >>>>>> ' + key + '   :   ' + value)
       if (Dep.target) {
         // 开始依赖收集(建立 dep 和 watcher 之间的关系)
         dep.depend()
@@ -194,6 +226,7 @@ export function defineReactive (
       }
       return value
     },
+    // 属性的 set ，会引起 render
     set: function reactiveSetter (newVal) {
       const value = getter ? getter.call(obj) : val
       // 如果是value未变，则不需要走流程
@@ -206,12 +239,18 @@ export function defineReactive (
         customSetter()
       }
 
+      console.log('SET >>>>>> ' + key + '   :   ' + value)
+
       // 执行 value 上已定义的 set 方法
       if (setter) {
         setter.call(obj, newVal)
       } else {
         val = newVal
       }
+
+      console.log('Begin to observe new value.' + newVal)
+
+      // observe 新值
       childOb = !shallow && observe(newVal)
       // 发布更新
       dep.notify()
