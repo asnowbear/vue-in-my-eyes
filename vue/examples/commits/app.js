@@ -20,9 +20,9 @@ var demo = new Vue({
     this.fetchData()
   },
 
-  // watch: {
-  //   currentBranch: 'fetchData'
-  // },
+  watch: {
+    currentBranch: 'fetchData'
+  },
 
   filters: {
     truncate: function (v) {
