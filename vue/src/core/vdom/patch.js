@@ -694,9 +694,10 @@ export function createPatchFunction (backend) {
   }
 
   /**
-   * 入口
+   * patch 入口
    */
   return function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) {
+    // isUndef,isDef 作为通用方法，确实减少了代码量
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
