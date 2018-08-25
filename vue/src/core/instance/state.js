@@ -332,8 +332,9 @@ function initMethods (vm: Component, methods: Object) {
 }
 
 function initWatch (vm: Component, watch: Object) {
+  // watch 是 object, key:value 的形式
   for (const key in watch) {
-    const handler = watch[key]
+    const handler = watch[key] // 获取function，是个 string
     if (Array.isArray(handler)) {
       for (let i = 0; i < handler.length; i++) {
         createWatcher(vm, key, handler[i])
@@ -386,6 +387,7 @@ export function stateMixin (Vue: Class<Component>) {
   Vue.prototype.$set = set
   Vue.prototype.$delete = del
 
+  // 为 Vue mixin 入 $watch 方法，用于添加 watch对象
   Vue.prototype.$watch = function (
     expOrFn: string | Function,
     cb: any,
@@ -397,6 +399,7 @@ export function stateMixin (Vue: Class<Component>) {
     }
     options = options || {}
     options.user = true
+    // 创建一个 watcher
     const watcher = new Watcher(vm, expOrFn, cb, options)
     if (options.immediate) {
       cb.call(vm, watcher.value)
