@@ -75,7 +75,10 @@ export function renderMixin (Vue: Class<Component>) {
    */
   Vue.prototype._render = function (): VNode {
     const vm: Component = this
-    const { render, _parentVnode } = vm.$options // 提取 render 和 renderFenction
+
+    // 提取 render 和 renderFenction
+    // 开始，_parentVnode = undefined
+    const { render, _parentVnode } = vm.$options
 
     // reset _rendered flag on slots for duplicate slot check
     if (process.env.NODE_ENV !== 'production') {
@@ -128,7 +131,7 @@ export function renderMixin (Vue: Class<Component>) {
           vm
         )
       }
-      vnode = createEmptyVNode()
+      vnode = createEmptyVNode() // 创建一个默认的 VNode 对象，否则会影响渲染
     }
     // set parent
     vnode.parent = _parentVnode
