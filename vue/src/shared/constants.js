@@ -1,3 +1,4 @@
+// 服务端渲染常量标识
 export const SSR_ATTR = 'data-server-rendered'
 
 // 直接绑到 Vue 上的静态方法
