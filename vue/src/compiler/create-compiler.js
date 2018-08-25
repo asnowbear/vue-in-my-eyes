@@ -63,7 +63,7 @@ export function createCompilerCreator (baseCompile: Function): Function {
 
     // 返回 compile 和 createCompileToFunctionFn
     return {
-      compile,// template的 AST 字符串形式
+      compile, // template的 AST 字符串形式
       // 集成 to-function.js 中的 compileToFunctions，编译成render的function对象
       // 这个是实际执行者
       compileToFunctions: createCompileToFunctionFn(compile)
