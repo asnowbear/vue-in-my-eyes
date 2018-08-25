@@ -20,6 +20,7 @@ import {
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
+// 初始化 vm lifecycle环节 全局私有变量
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
@@ -46,9 +47,13 @@ export function initLifecycle (vm: Component) {
   vm._isBeingDestroyed = false
 }
 
+/**
+ * 为 lifecycle 混入 _update、$destroy等方法
+ * @return {[type]}
+ */
 export function lifecycleMixin (Vue: Class<Component>) {
   /**
-   * vm.update() 则会对比（diff算法）新的 vdom 和当前 vdom，并把差异的部分渲染到真正的 DOM 树上
+   *
    * @param vnode
    * @param hydrating
    * @private
@@ -63,19 +68,22 @@ export function lifecycleMixin (Vue: Class<Component>) {
 
     console.log('....update and __patch__ ....')
 
-    const prevEl = vm.$el
-    const prevVnode = vm._vnode
+    const prevEl = vm.$el // 真实 el
+    const prevVnode = vm._vnode // 初始 null
     const prevActiveInstance = activeInstance
     activeInstance = vm
-    vm._vnode = vnode
+    vm._vnode = vnode // 挂到 vm_vnode 上
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
+    // 开始 __patch__
     if (!prevVnode) {
       // initial render
       // 开启 patch 阶段 ，期间会调用diff算法来对比新旧 vnode ，然后再更新
       // 【diff算法，结束后在patch到DOM中】
       vm.$el = vm.__patch__(
-        vm.$el, vnode, hydrating, false /* removeOnly */,
+        vm.$el, // oldVnode
+        vnode, // vnode
+        hydrating, false /* removeOnly */,
         vm.$options._parentElm,
         vm.$options._refElm
       )
