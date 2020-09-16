@@ -56,14 +56,14 @@ Vue.component('demo-grid', {
 // bootstrap the demo
 var demo = new Vue({
   el: '#demo',
-  data: {
+  data: { // 对应一个Observer实例
     searchQuery: '',
-    gridColumns: ['name', 'power'],
+    gridColumns: ['name', 'power'], // 对应一个Observer实例
     gridData: [
-      { name: 'Chuck Norris', power: Infinity },
-      { name: 'Bruce Lee', power: 9000 },
-      { name: 'Jackie Chan', power: 7000 },
-      { name: 'Jet Li', power: 8000 }
+      { name: 'Chuck Norris', power: Infinity }, // 对应一个Observer实例
+      // { name: 'Bruce Lee', power: 9000 },        // 对应一个Observer实例
+      // { name: 'Jackie Chan', power: 7000 },      // 对应一个Observer实例
+      // { name: 'Jet Li', power: 8000 }            // 对应一个Observer实例
     ]
   }
 })

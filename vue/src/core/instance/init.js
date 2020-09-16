@@ -69,6 +69,7 @@ export function initMixin (Vue: Class<Component>) {
     initRender(vm)
     // 调用 beforeCreate 的钩子函数
     callHook(vm, 'beforeCreate')
+    // 
     initInjections(vm) // resolve injections before data/props
     // 初始化 props,methods,data,computed,watch
     // 劫持data,props,vm 代理methods
@@ -92,6 +93,8 @@ export function initMixin (Vue: Class<Component>) {
 }
 
 export function initInternalComponent (vm: Component, options: InternalComponentOptions) {
+  // vm.$options._proto_ = vm.constructor.options
+  // Object.create()创建一个_proto，赋值给新对象
   const opts = vm.$options = Object.create(vm.constructor.options)
   // doing this because it's faster than dynamic enumeration.
   const parentVnode = options._parentVnode

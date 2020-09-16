@@ -116,9 +116,11 @@ export function createComponent (
     return
   }
 
+  // Vue对象
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
+  // Ctor为vue-template-compiler提前解析好的Object对象信息
   if (isObject(Ctor)) {
     Ctor = baseCtor.extend(Ctor)
   }
@@ -162,7 +164,7 @@ export function createComponent (
     transformModel(Ctor.options, data)
   }
 
-  // extract props
+  // extract props 提取组件的prop对象
   const propsData = extractPropsFromVNodeData(data, Ctor, tag)
 
   // functional component
@@ -218,6 +220,7 @@ export function createComponentInstanceForVnode (
   parentElm?: ?Node,
   refElm?: ?Node
 ): Component {
+  // 构建组件的options
   const options: InternalComponentOptions = {
     _isComponent: true,
     parent,
@@ -238,6 +241,7 @@ function mergeHooks (data: VNodeData) {
   if (!data.hook) {
     data.hook = {}
   }
+  // 挂载钩子函数
   for (let i = 0; i < hooksToMerge.length; i++) {
     const key = hooksToMerge[i]
     const fromParent = data.hook[key]

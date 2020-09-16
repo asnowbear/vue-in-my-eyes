@@ -33,6 +33,7 @@ export function createElement (
   normalizationType: any,
   alwaysNormalize: boolean
 ): VNode | Array<VNode> {
+  // 参数前移，处理参数不一致的调用情况
   if (Array.isArray(data) || isPrimitive(data)) {
     normalizationType = children
     children = data
@@ -51,12 +52,13 @@ export function _createElement (
   children?: any,
   normalizationType?: number
 ): VNode | Array<VNode> {
-  if (isDef(data) && isDef((data: any).__ob__)) {
-    process.env.NODE_ENV !== 'production' && warn(
+  // 不能为响应式数据，__ob__存储了Observer实例
+  if (isDef(data) && isDef((data).__ob__)) {
+    if(process.env.NODE_ENV !== 'production') {
+      warn(
       `Avoid using observed data object as vnode data: ${JSON.stringify(data)}\n` +
-      'Always create fresh vnode data objects in each render!',
-      context
-    )
+      'Always create fresh vnode data objects in each render!',context)
+    }
     return createEmptyVNode()
   }
   // object syntax in v-bind
@@ -87,8 +89,10 @@ export function _createElement (
     data.scopedSlots = { default: children[0] }
     children.length = 0
   }
+
+  // children变成一维数组
   if (normalizationType === ALWAYS_NORMALIZE) {
-    children = normalizeChildren(children)
+    children = normalizeChildren(children) // 创建children的VNode实例
   } else if (normalizationType === SIMPLE_NORMALIZE) {
     children = simpleNormalizeChildren(children)
   }
@@ -96,14 +100,18 @@ export function _createElement (
   if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
-    if (config.isReservedTag(tag)) {
+    if (config.isReservedTag(tag)) { // 是否是html保留标签
       // platform built-in elements
+      // 创建div的VNode对象，并设置children的VNode
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
-    } else if (isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
+    } 
+    // 取出options中的components对象(该对象由vue-template-compiler编译生成)，并开始生成子组件
+    // 的vnode
+    else if (isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      // component 参数是组件
       vnode = createComponent(Ctor, data, context, children, tag)
     } else {
       // unknown or unlisted namespaced elements
@@ -115,7 +123,7 @@ export function _createElement (
       )
     }
   } else {
-    // direct component options / constructor
+    // direct component options / constructor 创建组件Vnode树
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {

@@ -44,6 +44,7 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   Vue.delete = del
   Vue.nextTick = nextTick
 
+  // 将component,directive,filter 绑定到Vue的options属性上
   Vue.options = Object.create(null)
   ASSET_TYPES.forEach(type => {
     Vue.options[type + 's'] = Object.create(null)
@@ -53,10 +54,11 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // components with in Weex's multi-instance scenarios.
   Vue.options._base = Vue
 
+  // 合并内置组件(keep-alive)到options的components上
   extend(Vue.options.components, builtInComponents)
 
-  initUse(Vue)
-  initMixin(Vue)
-  initExtend(Vue)
-  initAssetRegisters(Vue)
+  initUse(Vue) // Vue.use方法
+  initMixin(Vue)  // Vue.mixin方法
+  initExtend(Vue) // Vue.extend方法
+  initAssetRegisters(Vue) // Vue生命周期静态方法
 }

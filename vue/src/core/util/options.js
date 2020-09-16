@@ -253,13 +253,15 @@ function checkComponents (options: Object) {
 }
 
 export function validateComponentName (name: string) {
+  // 字母
   if (!/^[a-zA-Z][\w-]*$/.test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
-      'can only contain alphanumeric characters and the hyphen, ' +
-      'and must start with a letter.'
+      'can only contain alphanumeric(字母和数字) characters and the hyphen（连字符）, ' +
+      'and must start with a letter（字母）.'
     )
   }
+  // 内置html标签
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
@@ -405,7 +407,7 @@ export function mergeOptions (
 }
 
 /**
- * Resolve an asset.
+ * Resolve(解析) an asset.
  * This function is used because child instances need access
  * to assets defined in its ancestor chain.
  */
@@ -419,14 +421,16 @@ export function resolveAsset (
   if (typeof id !== 'string') {
     return
   }
+  // hasOwn不会去原型链上找
+  // Reflect.has是in的ES6版本写法，可以判断原型链上的属性
   const assets = options[type]
-  // check local registration variations first
-  if (hasOwn(assets, id)) return assets[id]
-  const camelizedId = camelize(id)
+  // check local registration variations（注册变量） first
+  if (hasOwn(assets, id)) return assets[id]  // 对照名称直接找
+  const camelizedId = camelize(id) // 变成驼峰找
   if (hasOwn(assets, camelizedId)) return assets[camelizedId]
-  const PascalCaseId = capitalize(camelizedId)
+  const PascalCaseId = capitalize(camelizedId) // 首字母大写找
   if (hasOwn(assets, PascalCaseId)) return assets[PascalCaseId]
-  // fallback to prototype chain
+  // fallback to prototype chain 原型链上寻找
   const res = assets[id] || assets[camelizedId] || assets[PascalCaseId]
   if (process.env.NODE_ENV !== 'production' && warnMissing && !res) {
     warn(

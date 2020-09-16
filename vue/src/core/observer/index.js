@@ -45,8 +45,6 @@ export class Observer {
     // value.__ob__ = this，就是挂载自己个
     def(value, '__ob__', this)
 
-    // console.log('new OB :' + printObject(value))
-
     // 监控 array
     if (Array.isArray(value)) {
       const augment = hasProto
@@ -54,18 +52,13 @@ export class Observer {
         : copyAugment
       augment(value, arrayMethods, arrayKeys)
 
-      // console.log('Start Array observer >>>>>>>>>')
+      console.log('Start Array observer >>>>>>>>>')
       // 遍历 array，并监控 array
       this.observeArray(value)
-
-      // console.log('End Array observer >>>>>>>>>')
     } else {
       // console.log('Start Object Walk >>>>>>>>>')
-
       // 为每一个data属性添加拦截
       this.walk(value)
-
-      // console.log('End Object Walk >>>>>>>>>')
     }
   }
 
@@ -140,7 +133,7 @@ function printObject (object: any): string {
  * or the existing observer if the value already has one.
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
-  // 如果是非 Object 对象，并且是 VNode 对象
+  // 数组、对象、VNode对象
   if (!isObject(value) || value instanceof VNode) {
     return
   }
@@ -170,7 +163,8 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (asRootData && ob) {
     ob.vmCount++
   }
-  // 未使用到这个 return ，why?
+
+  // 返回子对象
   return ob
 }
 

@@ -53,7 +53,7 @@ if (process.env.NODE_ENV !== 'production') {
      * @returns {boolean}
      */
     has (target, key) {
-      const has = key in target
+      const has = key in target // 是否是未定义
       const isAllowed = allowedGlobals(key) || key.charAt(0) === '_'
       if (!has && !isAllowed) {
         warnNonPresent(target, key)
@@ -71,6 +71,7 @@ if (process.env.NODE_ENV !== 'production') {
     }
   }
 
+  // 拦截vm，访问下划线、未定义属性的情况，将会抛出错误
   initProxy = function initProxy (vm) {
     if (hasProxy) {
       // determine which proxy handler to use

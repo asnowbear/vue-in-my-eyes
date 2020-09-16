@@ -73,6 +73,7 @@ export function createPatchFunction (backend) {
   let i, j
   const cbs = {}
 
+  // nodeOps: 操作DOM的模块
   const { modules, nodeOps } = backend
 
   for (i = 0; i < hooks.length; ++i) {
@@ -153,6 +154,7 @@ export function createPatchFunction (backend) {
     }
 
     vnode.isRootInsert = !nested // for transition enter check
+    // 判断组件的钩子，执行init，并创建Vue实例，开启渲染轮回
     if (createComponent(vnode, insertedVnodeQueue, parentElm, refElm)) {
       return
     }
@@ -160,6 +162,7 @@ export function createPatchFunction (backend) {
     const data = vnode.data
     const children = vnode.children
     const tag = vnode.tag
+    // <>标签
     if (isDef(tag)) {
       if (process.env.NODE_ENV !== 'production') {
         if (data && data.pre) {
@@ -200,20 +203,30 @@ export function createPatchFunction (backend) {
           insert(parentElm, vnode.elm, refElm)
         }
       } else {
+        // 遍历循环插入到DOM中，先子后父
         createChildren(vnode, children, insertedVnodeQueue)
+        // 更新DOM属性、样式、事件等
+        // 执行cb.create的钩子函数列表，并更新insertedVnodeQueue数组
+        // 列表包括：updateAttrs,updateClass,updateDOMListeners,
+        // updateDOMProps,updateStyle,_enter,create,updateDireactives
         if (isDef(data)) {
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
+        // 再插入父DOM上
         insert(parentElm, vnode.elm, refElm)
       }
 
       if (process.env.NODE_ENV !== 'production' && data && data.pre) {
         creatingElmInVPre--
       }
-    } else if (isTrue(vnode.isComment)) {
+    } 
+    // 注释
+    else if (isTrue(vnode.isComment)) {
       vnode.elm = nodeOps.createComment(vnode.text)
       insert(parentElm, vnode.elm, refElm)
-    } else {
+    } 
+    // 纯文本
+    else {
       vnode.elm = nodeOps.createTextNode(vnode.text)
       insert(parentElm, vnode.elm, refElm)
     }
@@ -297,6 +310,7 @@ export function createPatchFunction (backend) {
       if (process.env.NODE_ENV !== 'production') {
         checkDuplicateKeys(children)
       }
+      // 递归插入子DOM
       for (let i = 0; i < children.length; ++i) {
         createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i)
       }
@@ -790,6 +804,7 @@ export function createPatchFunction (backend) {
 
         // destroy old node
         if (isDef(parentElm)) {
+          // 移除旧标签，这块还需要再理解理解
           removeVnodes(parentElm, [oldVnode], 0, 0)
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode)
@@ -797,6 +812,7 @@ export function createPatchFunction (backend) {
       }
     }
 
+    // 执行queue队列中的insert钩子函数，抛出组件的mounted事件
     invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }

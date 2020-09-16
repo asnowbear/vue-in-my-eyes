@@ -95,8 +95,6 @@ export default class Watcher {
       }
     }
 
-    console.log('get fun excuted.')
-
     // 初始化依赖收集
     this.value = this.lazy
       ? undefined
@@ -110,12 +108,8 @@ export default class Watcher {
     // Dep.target = this, 作为依赖收集
     pushTarget(this)
 
-    console.log('Dep.target ====== ' + Dep.target.id)
-
     let value
     const vm = this.vm
-
-    console.log('....BEGINE TO RENDER....')
 
     // 启动渲染流程，此时：getter=updateComponent
     try {

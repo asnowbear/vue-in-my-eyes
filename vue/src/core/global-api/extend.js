@@ -18,24 +18,31 @@ export function initExtend (Vue: GlobalAPI) {
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}
-    const Super = this
+    const Super = this // 定义更明确
     const SuperId = Super.cid
+
+    // 构建缓存，避免重复构建子组件
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
     if (cachedCtors[SuperId]) {
       return cachedCtors[SuperId]
     }
 
+    // 验证组件名称
     const name = extendOptions.name || Super.options.name
     if (process.env.NODE_ENV !== 'production' && name) {
       validateComponentName(name)
     }
 
+    // 创建继承自Vue的子类组件
     const Sub = function VueComponent (options) {
       this._init(options)
     }
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
+
+    // 扩展剩余信息
     Sub.cid = cid++
+    // 合并VueOptions到一个子的options上
     Sub.options = mergeOptions(
       Super.options,
       extendOptions
@@ -64,7 +71,7 @@ export function initExtend (Vue: GlobalAPI) {
     })
     // enable recursive self-lookup
     if (name) {
-      Sub.options.components[name] = Sub
+      Sub.options.components[name] = Sub // 死循环引用
     }
 
     // keep a reference to the super options at extension time.

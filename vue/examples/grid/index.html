@@ -5,7 +5,7 @@
     <title>Vue.js grid component example</title>
     <link rel="stylesheet" href="style.css">
     <!-- Delete ".min" for console warnings in development -->
-    <script src="../../dist/vue.min.js"></script>
+    <script src="../../dist/vue.js"></script>
     </head>
   <body>
 
@@ -37,7 +37,7 @@
     <!-- demo root element -->
     <div id="demo">
       <form id="search">
-        Search <input name="query" v-model="searchQuery">
+        <input name="query" v-model="searchQuery">
       </form>
       <demo-grid
         :data="gridData"

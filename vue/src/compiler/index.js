@@ -21,31 +21,31 @@ export const createCompiler = createCompilerCreator(
    * @returns {{ast: *, render: string, staticRenderFns: Array.<string>}}
    */
   function baseCompile (template: string, options: CompilerOptions): CompiledResult {
-  /**
-   * 主要功能是将 template字符串解析成 AST。
-   * 前面定义了ASTElement的数据结构，
-   * parse 函数就是将template里的结构（指令，属性，标签等）转换为AST形式存进ASTElement中，
-   * 最后解析生成AST
-   * @type {*}
-   */
-  const ast = parse(template.trim(), options)
-  if (options.optimize !== false) {
     /**
-     * 主要功能就是标记静态节点，为后面 patch 过程中对比新旧 VNode 树形结构做优化
+     * 主要功能是将 template字符串解析成 AST。
+     * 前面定义了ASTElement的数据结构，
+     * parse 函数就是将template里的结构（指令，属性，标签等）转换为AST形式存进ASTElement中，
+     * 最后解析生成AST
+     * @type {*}
      */
-    optimize(ast, options)
-  }
+    const ast = parse(template.trim(), options)
+    if (options.optimize !== false) {
+      /**
+       * 主要功能就是标记静态节点，为后面 patch 过程中对比新旧 VNode 树形结构做优化
+       */
+      optimize(ast, options)
+    }
 
-  /**
-   * 主要功能就是根据 AST 结构拼接生成 render 函数的字符串
-   * @type {CodegenResult}
-   */
-  const code = generate(ast, options)
-  return {
-    ast,
-    render: code.render,
-    staticRenderFns: code.staticRenderFns
+    /**
+     * 主要功能就是根据 AST 结构拼接生成 render 函数的字符串
+     * @type {CodegenResult}
+     */
+    const code = generate(ast, options)
+    return {
+      ast,
+      render: code.render,
+      staticRenderFns: code.staticRenderFns
+    }
   }
-}
 
 )

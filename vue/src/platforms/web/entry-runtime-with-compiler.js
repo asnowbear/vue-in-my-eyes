@@ -47,6 +47,8 @@ Vue.prototype.$mount = function (
   }
 
   const options = this.$options
+  // 用户没有定义render函数，则需要解析template并生成render函数，
+  // 最后挂到 vm.options 上
   // resolve template/el and convert to render function
   if (!options.render) {
     let template = options.template

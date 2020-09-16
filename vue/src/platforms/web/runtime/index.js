@@ -31,6 +31,7 @@ extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // install platform patch function
+// 浏览器环境需要挂载到DOM上，服务器渲染没有真实DOM环境，则赋值为noop
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method

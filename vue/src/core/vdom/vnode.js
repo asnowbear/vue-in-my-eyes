@@ -58,7 +58,7 @@ export default class VNode {
     this.raw = false
     this.isStatic = false
     this.isRootInsert = true
-    this.isComment = false
+    this.isComment = false     // 是不是注释性节点
     this.isCloned = false
     this.isOnce = false
     this.asyncFactory = asyncFactory
@@ -81,7 +81,7 @@ export default class VNode {
 export const createEmptyVNode = (text: string = '') => {
   const node = new VNode()
   node.text = text
-  node.isComment = true
+  node.isComment = true // 定义成注释类型节点
   return node
 }
 

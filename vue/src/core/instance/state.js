@@ -63,7 +63,7 @@ export function initState (vm: Component) {
   }
 
   // 初始化【vm代理】 methods
-  // 实际上：将 methods 方法直接挂到vm对象上
+  // 实际上：将 methods 方法直接挂到 vm 对象上
   if (opts.methods) {
     initMethods(vm, opts.methods)
   }
@@ -77,12 +77,12 @@ export function initState (vm: Component) {
     observe(vm._data = {}, true /* asRootData */)
   }
 
-  // 初始化computer
+  // 挂载computer
   if (opts.computed) {
     initComputed(vm, opts.computed)
   }
 
-  // 初始化 watch
+  // 挂载 watch
   if (opts.watch && opts.watch !== nativeWatch) {
     initWatch(vm, opts.watch)
   }
@@ -95,7 +95,7 @@ export function initState (vm: Component) {
 function initProps (vm: Component, propsOptions: Object) {
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
-  // cache prop keys so that future props updates can iterate using Array
+  // cache prop keys so that future props updates can iterate(迭代) using Array
   // instead of dynamic object key enumeration.
   const keys = vm.$options._propKeys = []
   const isRoot = !vm.$parent
@@ -159,8 +159,6 @@ function initData (vm: Component) {
   // proxy data on instance
   const keys = Object.keys(data)
 
-  // data 与 props 去重判断
-  // data 与 methods 去重判断
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
@@ -194,8 +192,6 @@ function initData (vm: Component) {
   // 为 data 添加 observe 环节
   // 观察者模式
   // --------------------------
-
-  console.log('......BEGIN TO OBSERVER DATA......')
 
   // 第三阶段：观察者模式
   // 为 data 添加观察者 【重要流程】
@@ -259,7 +255,7 @@ export function defineComputed (
   key: string,
   userDef: Object | Function
 ) {
-  const shouldCache = !isServerRendering()
+  const shouldCache = !isServerRendering() // 非SRR渲染，则缓存
   if (typeof userDef === 'function') {
     sharedPropertyDefinition.get = shouldCache
       ? createComputedGetter(key)
@@ -288,7 +284,7 @@ export function defineComputed (
 }
 
 function createComputedGetter (key) {
-  return function computedGetter () {
+  return function computedGetter () { // 闭包缓存
     const watcher = this._computedWatchers && this._computedWatchers[key]
     if (watcher) {
       if (watcher.dirty) {

@@ -58,9 +58,11 @@ export function isPrimitive (value: any): boolean %checks {
 }
 
 /**
- * Quick object check - this is primarily used to tell
- * Objects from primitive values when we know the value
- * is a JSON-compliant type.
+ * Quick object check - this is primarily(主要的、根本地) used to tell
+ * Objects from primitive(原始的) values when we know the value
+ * is a JSON-compliant（兼容的） type.
+ * 
+ *  typeof []|{}|null = 'object'
  */
 export function isObject (obj: mixed): boolean %checks {
   return obj !== null && typeof obj === 'object'
@@ -219,6 +221,7 @@ export function bind (fn: Function, ctx: Object): Function {
 
 /**
  * Convert an Array-like object to a real Array.
+ * Array-like object 本质上是一个Object对象
  */
 export function toArray (list: any, start?: number): Array<any> {
   start = start || 0

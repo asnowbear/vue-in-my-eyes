@@ -8,6 +8,7 @@ export const namespaceMap = {
   math: 'http://www.w3.org/1998/Math/MathML'
 }
 
+// 定义HTML标签关键字
 export const isHTMLTag = makeMap(
   'html,body,base,head,link,meta,style,title,' +
   'address,article,aside,footer,header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,' +
@@ -33,6 +34,7 @@ export const isSVG = makeMap(
 
 export const isPreTag = (tag: ?string): boolean => tag === 'pre'
 
+// 判断是否是html保留标签
 export const isReservedTag = (tag: string): ?boolean => {
   return isHTMLTag(tag) || isSVG(tag)
 }

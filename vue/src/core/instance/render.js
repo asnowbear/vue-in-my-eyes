@@ -24,12 +24,14 @@ export function initRender (vm: Component) {
   vm.$slots = resolveSlots(options._renderChildren, renderContext)
   vm.$scopedSlots = emptyObject
   // bind the createElement fn to this instance
-  // so that we get proper render context inside it.
+  // so that we get proper(合理的、正确的) render context inside it.
   // args order: tag, data, children, normalizationType, alwaysNormalize
   // internal version is used by render functions compiled from templates
+  // 编译template使用的内部render方法，
   vm._c = (a, b, c, d) => createElement(vm, a, b, c, d, false)
   // normalization is always applied for the public version, used in
-  // user-written render functions.
+  // user-written render functions. 
+  // 手写render调用
   vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
 
   // $attrs & $listeners are exposed for easier HOC creation.
@@ -68,7 +70,6 @@ export function renderMixin (Vue: Class<Component>) {
 
   /**
    * 生成 vNode 对象
-   * 执行前面compiler生成的render方法，并返回一个vNode对象
    *
    * @returns {VNode} 返回一个 VNode 对象
    * @private
@@ -77,7 +78,7 @@ export function renderMixin (Vue: Class<Component>) {
     const vm: Component = this
 
     // 提取 render 和 renderFenction
-    // 开始，_parentVnode = undefined
+    // _parentVnode组件占位符
     const { render, _parentVnode } = vm.$options
 
     // reset _rendered flag on slots for duplicate slot check
@@ -92,15 +93,13 @@ export function renderMixin (Vue: Class<Component>) {
       vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject
     }
 
-    console.log('.....render.....')
-
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
     vm.$vnode = _parentVnode
     // render self
     let vnode
     try {
-      // 生成VNode
+      // 调用用户自定义render，或自动编译生成的render函数
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       handleError(e, vm, `render`)

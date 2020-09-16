@@ -20,6 +20,7 @@ export function initAssetRegisters (Vue: GlobalAPI) {
           validateComponentName(id)
         }
         if (type === 'component' && isPlainObject(definition)) {
+          // 一般写法会加个if判断，但是这里巧妙运用了||来给自己初始化值
           definition.name = definition.name || id
           definition = this.options._base.extend(definition)
         }

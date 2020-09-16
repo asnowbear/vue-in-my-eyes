@@ -30,10 +30,10 @@ export function initLifecycle (vm: Component) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
-    parent.$children.push(vm)
+    parent.$children.push(vm) // 添加子vue实例
   }
 
-  vm.$parent = parent
+  vm.$parent = parent // 构建父子vue示例关系
   vm.$root = parent ? parent.$root : vm
 
   vm.$children = []
@@ -75,11 +75,8 @@ export function lifecycleMixin (Vue: Class<Component>) {
     vm._vnode = vnode // 挂到 vm_vnode 上
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
-    // 开始 __patch__
     if (!prevVnode) {
-      // initial render
-      // 开启 patch 阶段 ，期间会调用diff算法来对比新旧 vnode ，然后再更新
-      // 【diff算法，结束后在patch到DOM中】
+      // initial render（初始渲染）
       vm.$el = vm.__patch__(
         vm.$el, // oldVnode
         vnode, // vnode
@@ -91,7 +88,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
       // this prevents keeping a detached DOM tree in memory (#5851)
       vm.$options._parentElm = vm.$options._refElm = null
     } else {
-      // updates
+      // updates 更新渲染调用
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     activeInstance = prevActiveInstance
