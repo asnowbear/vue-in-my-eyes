@@ -5,13 +5,14 @@ import { noop } from 'shared/util'
 import { handleError } from './error'
 import { isIOS, isNative } from './env'
 
-const callbacks = []
+const callbacks = [] 
 let pending = false
 
+// cb冲刷函数
 function flushCallbacks () {
   pending = false
-  const copies = callbacks.slice(0)
-  callbacks.length = 0
+  const copies = callbacks.slice(0) // 副本
+  callbacks.length = 0 // 清空
   for (let i = 0; i < copies.length; i++) {
     copies[i]()
   }
@@ -25,8 +26,8 @@ function flushCallbacks () {
 // when state is changed right before repaint (e.g. #6813, out-in transitions).
 // Here we use microtask by default, but expose a way to force (macro) task when
 // needed (e.g. in event handlers attached by v-on).
-let microTimerFunc
-let macroTimerFunc
+let microTimerFunc  // 微任务处理函数，主要使用Promise方式 
+let macroTimerFunc  // 宏任务处理函数，zhua
 let useMacroTask = false
 
 // Determine (macro) task defer implementation.
@@ -34,6 +35,7 @@ let useMacroTask = false
 // in IE. The only polyfill that consistently queues the callback after all DOM
 // events triggered in the same loop is by using MessageChannel.
 /* istanbul ignore if */
+// macroTimerFunc 兼容方案
 if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   macroTimerFunc = () => {
     setImmediate(flushCallbacks)
@@ -58,6 +60,7 @@ if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
 
 // Determine microtask defer implementation.
 /* istanbul ignore next, $flow-disable-line */
+// microTimerFunc的兼容方案
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   const p = Promise.resolve()
   microTimerFunc = () => {
@@ -100,6 +103,7 @@ export function nextTick (cb?: Function, ctx?: Object) {
       _resolve(ctx)
     }
   })
+
   if (!pending) {
     pending = true
     if (useMacroTask) {
@@ -108,6 +112,7 @@ export function nextTick (cb?: Function, ctx?: Object) {
       microTimerFunc()
     }
   }
+
   // $flow-disable-line
   if (!cb && typeof Promise !== 'undefined') {
     return new Promise(resolve => {
