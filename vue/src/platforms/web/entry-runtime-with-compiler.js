@@ -36,7 +36,7 @@ Vue.prototype.$mount = function (
   hydrating?: boolean
 ): Component {
   // 将el转换为DOM节点
-  el = el && query(el)
+  el = el && query(el) // 先判断el 如果有执行query(el),并返回给el
 
   /* istanbul ignore if */
   if (el === document.body || el === document.documentElement) {
@@ -105,6 +105,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  
   return mount.call(this, el, hydrating)
 }
 

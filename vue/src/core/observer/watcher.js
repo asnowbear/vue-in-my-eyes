@@ -225,6 +225,7 @@ export default class Watcher {
   }
 
   /**
+   * 求...值
    * Evaluate the value of the watcher.
    * This only gets called for lazy watchers.
    */
